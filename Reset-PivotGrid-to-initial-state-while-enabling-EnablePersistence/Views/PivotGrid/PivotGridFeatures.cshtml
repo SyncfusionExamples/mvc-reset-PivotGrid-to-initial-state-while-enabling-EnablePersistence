@@ -1,0 +1,45 @@
+﻿@using Syncfusion.EJ2
+@using Syncfusion.EJ2.PivotView
+@{
+    ViewBag.Title = "PivotGrid";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>PivotGrid Features:</h2>
+<br/>
+<li> PivotGrid Sample</li>
+<li> Theme - Fabric</li>
+<br/>
+<div class="control-section">
+    @Html.EJS().Button("state").Content("Go To Initial State").IsPrimary(true).Render()
+    <div class="content-wrapper">
+        @Html.EJS().PivotView("pivotgrid").Width("800").Height("300").EnablePersistence(true).ShowFieldList(true).ShowGroupingBar(true).DataSource(dataSource => dataSource.Data((IEnumerable<object>)ViewBag.Data).ExpandAll(false).EnableSorting(true)
+           .FormatSettings(formatsettings => { formatsettings.Name("Amount").Format("C0").MaximumSignificantDigits(10).MinimumSignificantDigits(1).UseGrouping(true).Add(); })
+           .Rows(rows => { rows.Name("Country").Add(); rows.Name("Products").Add(); })
+           .Columns(columns => { columns.Name("Year").Add(); })
+           .Values(values =>
+           {
+               values.Name("Amount").Caption("Sold Amount").Add();
+           })).GridSettings(new PivotViewGridSettings { ColumnWidth = 140 }).Load("load").Render()
+    </div>
+
+    <script>
+    function load() {
+        if (window.localStorage.getItem('initialState') === null && window.localStorage.getItem('pivotviewpivot1')) {
+            // store initial state settings in local storage
+            window.localStorage.setItem('initialState', window.localStorage.getItem('pivotviewpivotgrid'));
+        }
+    }
+    document.getElementById("state").addEventListener('click', function () {
+        var model = JSON.parse(window.localStorage.getItem('initialState'));
+        // Reset initial state to grid through setProperties
+        document.getElementById('pivotgrid').ej2_instances[0].setProperties(model);
+    });
+    </script>
+
+    <style>
+        #pivotview {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
